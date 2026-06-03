@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HopeNet — Empowering Communities</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<style>
+  :root {
+    --brand: #0f766e;
+    --brand-light: #14b8a6;
+    --accent: #f59e0b;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: #f8fafc; overflow-x: hidden; }
+  .page-section { display: none; opacity: 0; }
+  .page-section.active { display: block; opacity: 1; }
+  .nav-link { transition: all 0.3s ease; cursor: pointer; }
+  .nav-link.active { color: var(--brand-light); font-weight: 600; }
+  .nav-link:hover { color: var(--brand-light); }
+  .gradient-text {
+    background: linear-gradient(135deg, #0f766e, #14b8a6, #f59e0b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glass {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 118, 110, 0.5);
+  }
+  .card-hover { transition: all 0.4s ease; }
+  .card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+  .pulse-dot {
+    width: 10px; height: 10px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+    100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  }
+  .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .faq-item.open .faq-answer { max-height: 300px; }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-icon { transition: transform 0.3s ease; }
+  .progress-fill {
+    transition: width 1.5s ease;
+    background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+  }
+  .bar {
+    animation: growBar 1.5s ease forwards;
+    transform-origin: bottom;
+  }
+  @keyframes growBar {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+  .mobile-menu {
+    transform: translateX(100%);
+    transition: transform 0.4s ease;
+  }
+  .mobile-menu.open { transform: translateX(0); }
+  .stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  input, textarea, select { transition: all 0.3s ease; }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--brand-light);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
+  }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #0f766e; border-radius: 4px; }
+  .floating { animation: float 6s ease-in-out infinite; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.6) 50%, rgba(15, 23, 42, 0.3) 100%);
+    z-index: 1;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 5rem 1.5rem;
+  }
+</style>
+</head>
+<body class="text-slate-800">
+
+<nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-200/50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#home" class="nav-link flex items-center gap-2" data-page="home">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-teal-400 flex items-center justify-center text-white font-bold text-xl shadow-lg">H</div>
+      <span class="text-xl font-bold tracking-tight">Hope<span class="text-teal-500">Net</span></span>
+    </a>
+    <div class="hidden lg:flex items-center gap-1 text-sm">
+      <a href="#home" class="nav-link px-3 py-2 rounded-lg active" data-page="home">Home</a>
+      <a href="#donate" class="nav-link px-3 py-2 rounded-lg" data-page="donate">Donate</a>
+      <a href="#dashboard" class="nav-link px-3 py-2 rounded-lg" data-page="dashboard">Dashboard</a>
+      <a href="#stories" class="nav-link px-3 py-2 rounded-lg" data-page="stories">Stories</a>
+      <a href="#volunteer" class="nav-link px-3 py-2 rounded-lg" data-page="volunteer">Volunteer</a>
+      <a href="#about" class="nav-link px-3 py-2 rounded-lg" data-page="about">About</a>
+      <button id="moreBtn" class="nav-link px-3 py-2 rounded-lg">More ▾</button>
+    </div>
+    <div class="hidden lg:block">
+      <a href="#donate" class="btn-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold" data-page="donate">Donate Now</a>
+    </div>
+    <button id="menuToggle" class="lg:hidden p-2">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="moreDropdown" class="hidden absolute right-10 top-full mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50">
+    <a href="#report" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="report">Daily Report</a>
+    <a href="#expenses" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="expenses">Expense History</a>
+    <a href="#emergency" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="emergency">Emergency Fund</a>
+    <a href="#transparency" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="transparency">Transparency</a>
+    <a href="#contact" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="contact">Contact</a>
+    <a href="#faq" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="faq">FAQ</a>
+  </div>
+</nav>
+
+<div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-80 bg-white z-50 shadow-2xl p-6 lg:hidden overflow-y-auto">
+  <button id="menuClose" class="absolute top-4 right-4 p-2">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+  </button>
+  <div class="mt-12 space-y-1">
+    <a href="#home" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50 active" data-page="home">🏠 Home</a>
+    <a href="#donate" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="donate">💝 Donate</a>
+    <a href="#report" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="report">📊 Daily Report</a>
+    <a href="#expenses" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="expenses">💸 Expense History</a>
+    <a href="#stories" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="stories">✨ Success Stories</a>
+    <a href="#volunteer" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="volunteer">🙌 Volunteer</a>
+    <a href="#about" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="about">ℹ️ About Us</a>
+    <a href="#contact" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="contact">📞 Contact</a>
+    <a href="#dashboard" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="dashboard">📈 Live Dashboard</a>
+    <a href="#emergency" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="emergency">🚨 Emergency Fund</a>
+    <a href="#transparency" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="transparency">💎 Transparency</a>
+    <a href="#faq" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="faq">❓ FAQ</a>
+  </div>
+</div>
+
+<main class="pt-20">
+
+<section id="home" class="page-section active">
+  <div class="hero-section">
+    <img src="https://image.qwenlm.ai/public_source/6c790bf8-80fd-4c19-90ab-c132465636ef/123002a3e-f1e3-4138-9ac5-2c2c75e1c301.png" class="hero-bg" alt="Community" onerror="this.style.display='none'" />
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="max-w-2xl text-white">
+        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full mb-6 fade-in" style="animation-delay: 0.1s;">
+          <span class="pulse-dot"></span>
+          <span class="text-sm font-medium">Making an impact since 2015</span>
+        </div>
+        <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6 fade-in" style="animation-delay: 0.2s;">
+          Building Hope,<br />
+          <span class="gradient-text">One Community</span><br />
+          at a Time
+        </h1>
+        <p class="text-lg md:text-xl text-slate-200 mb-8 fade-in" style="animation-delay: 0.3s;">Join 50,000+ donors and volunteers working together to create lasting change in underserved communities worldwide.</p>
+        <div class="flex flex-wrap gap-4 fade-in" style="animation-delay: 0.4s;">
+          <a href="#donate" class="btn-primary text-white px-8 py-4 rounded-full font-semibold" data-page="donate">Donate Now →</a>
+          <a href="#volunteer" class="bg-white/10 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-full font-semibold hover:bg-white/20 transition" data-page="volunteer">Join as Volunteer</a>
+        </div>
+      </div>
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 fade-in" style="animation-delay: 0.5s;">
+        <div class="stat-card"><div class="text-3xl font-bold text-teal-600" data-count="50000">0</div><div class="text-sm text-slate-600 mt-1">Lives Impacted</div></div>
+        <div class="stat-card"><div class="text-3xl font-bold text-amber-500" data-count="120">0</div><div class="text-sm text-slate-600 mt-1">Active Projects</div></div>
+        <div class="stat-card"><div class="text-3xl font-bold text-rose-500" data-count="2500000">0</div><div class="text-sm text-slate-600 mt-1">Funds Raised ($)</div></div>
+        <div class="stat-card"><div class="text-3xl font-bold text-indigo-500" data-count="350">0</div><div class="text-sm text-slate-600 mt-1">Volunteers</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="donate" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-5xl font-bold mb-4">Make a <span class="gradient-text">Difference</span> Today</h2>
+      <p class="text-slate-600 text-lg max-w-2xl mx-auto">100% of your donation goes directly to our programs. Every dollar counts.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="card-hover bg-white rounded-3xl p-8 border-2 border-slate-100 cursor-pointer donate-tier" data-amount="25">
+        <div class="text-sm font-semibold text-teal-600 mb-2">SEED</div>
+        <div class="text-4xl font-bold mb-4">$25</div>
+        <p class="text-slate-600 text-sm">Provides school supplies for one child for an entire year.</p>
+      </div>
+      <div class="card-hover bg-gradient-to-br from-teal-500 to-teal-700 text-white rounded-3xl p-8 border-2 border-teal-400 cursor-pointer donate-tier ring-4 ring-teal-200" data-amount="100">
+        <div class="text-sm font-semibold mb-2 opacity-90">GROWER ⭐</div>
+        <div class="text-4xl font-bold mb-4">$100</div>
+        <p class="text-white/90 text-sm">Funds a week of meals for a family in need.</p>
+      </div>
+      <div class="card-hover bg-white rounded-3xl p-8 border-2 border-slate-100 cursor-pointer donate-tier" data-amount="500">
+        <div class="text-sm font-semibold text-amber-500 mb-2">CHAMPION</div>
+        <div class="text-4xl font-bold mb-4">$500</div>
+        <p class="text-slate-600 text-sm">Sponsors a community health checkup event.</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-3xl p-8 md:p-12 shadow-xl max-w-2xl mx-auto">
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-2">Custom Amount</label>
+        <div class="relative">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">$</span>
+          <input id="donateAmount" type="number" value="100" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-4 pl-10 pr-4 text-2xl font-bold" />
+        </div>
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-2">Donation Frequency</label>
+        <div class="grid grid-cols-2 gap-3">
+          <button class="freq-btn bg-teal-500 text-white py-3 rounded-xl font-semibold" data-freq="monthly">Monthly</button>
+          <button class="freq-btn bg-slate-100 text-slate-700 py-3 rounded-xl font-semibold" data-freq="once">One-time</button>
+        </div>
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-2">Payment Method</label>
+        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4">
+          <option>💳 Credit Card</option>
+          <option>🏦 Bank Transfer</option>
+          <option>📱 PayPal</option>
+          <option>🪙 Cryptocurrency</option>
+        </select>
+      </div>
+      <button id="donateBtn" class="btn-primary w-full text-white py-4 rounded-xl font-bold text-lg">Complete Donation</button>
+      <div id="donateSuccess" class="hidden mt-4 p-4 bg-green-50 text-green-700 rounded-xl text-center font-semibold">✅ Thank you! Your donation has been received.</div>
+    </div>
+  </div>
+</section>
+
+<section id="report" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
+      <div>
+        <h2 class="text-4xl font-bold mb-2">Daily Activity Report</h2>
+        <p class="text-slate-600">Real-time updates from our field teams</p>
+      </div>
+      <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow">
+        <span class="pulse-dot"></span>
+        <span class="text-sm font-semibold">Live • June 3, 2026</span>
+      </div>
+    </div>
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-sm text-slate-600">Time</th>
+              <th class="text-left p-4 font-semibold text-sm text-slate-600">Activity</th>
+              <th class="text-left p-4 font-semibold text-sm text-slate-600">Location</th>
+              <th class="text-left p-4 font-semibold text-sm text-slate-600">Status</th>
+              <th class="text-left p-4 font-semibold text-sm text-slate-600">Impact</th>
+            </tr>
+          </thead>
+          <tbody id="reportTable" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="expenses" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <h2 class="text-4xl font-bold mb-2">Expense History</h2>
+    <p class="text-slate-600 mb-12">Complete transparency on how funds are allocated</p>
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-3xl p-8 shadow-lg">
+        <h3 class="font-bold text-lg mb-4">Spending by Category (2026)</h3>
+        <div class="space-y-4">
+          <div><div class="flex justify-between text-sm mb-1"><span>Education Programs</span><span class="font-semibold">42%</span></div><div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-teal-500 rounded-full" style="width:42%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span>Healthcare</span><span class="font-semibold">28%</span></div><div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-rose-500 rounded-full" style="width:28%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span>Food Security</span><span class="font-semibold">18%</span></div><div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-amber-500 rounded-full" style="width:18%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span>Operations</span><span class="font-semibold">12%</span></div><div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-indigo-500 rounded-full" style="width:12%"></div></div></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg">
+        <h3 class="font-bold text-lg mb-4">Monthly Spend</h3>
+        <div class="flex items-end justify-between gap-2 h-48">
+          <div class="bar flex-1 bg-teal-200 rounded-t-lg" style="height:40%"></div>
+          <div class="bar flex-1 bg-teal-300 rounded-t-lg" style="height:65%"></div>
+          <div class="bar flex-1 bg-teal-400 rounded-t-lg" style="height:50%"></div>
+          <div class="bar flex-1 bg-teal-500 rounded-t-lg" style="height:80%"></div>
+          <div class="bar flex-1 bg-teal-500 rounded-t-lg" style="height:70%"></div>
+          <div class="bar flex-1 bg-teal-600 rounded-t-lg" style="height:95%"></div>
+        </div>
+        <div class="flex justify-between text-xs text-slate-500 mt-2"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-slate-50"><tr><th class="text-left p-4 text-sm font-semibold text-slate-600">Date</th><th class="text-left p-4 text-sm font-semibold text-slate-600">Category</th><th class="text-left p-4 text-sm font-semibold text-slate-600">Description</th><th class="text-right p-4 text-sm font-semibold text-slate-600">Amount</th></tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr><td class="p-4 text-sm">Jun 2</td><td class="p-4 text-sm"><span class="px-2 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-semibold">Education</span></td><td class="p-4 text-sm">School Supplies - Region 4</td><td class="p-4 text-sm text-right font-semibold">$12,450</td></tr>
+          <tr><td class="p-4 text-sm">May 30</td><td class="p-4 text-sm"><span class="px-2 py-1 bg-rose-100 text-rose-700 rounded-full text-xs font-semibold">Healthcare</span></td><td class="p-4 text-sm">Medical Camp Setup</td><td class="p-4 text-sm text-right font-semibold">$8,900</td></tr>
+          <tr><td class="p-4 text-sm">May 28</td><td class="p-4 text-sm"><span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">Food</span></td><td class="p-4 text-sm">Weekly Food Distribution</td><td class="p-4 text-sm text-right font-semibold">$15,200</td></tr>
+          <tr><td class="p-4 text-sm">May 25</td><td class="p-4 text-sm"><span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold">Operations</span></td><td class="p-4 text-sm">Staff Salaries - May</td><td class="p-4 text-sm text-right font-semibold">$22,000</td></tr>
+          <tr><td class="p-4 text-sm">May 20</td><td class="p-4 text-sm"><span class="px-2 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-semibold">Education</span></td><td class="p-4 text-sm">Teacher Training Workshop</td><td class="p-4 text-sm text-right font-semibold">$5,600</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="stories" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <h2 class="text-5xl font-bold mb-4 text-center">Success <span class="gradient-text">Stories</span></h2>
+    <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">Real stories of real change from communities we serve</p>
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-lg">
+        <img src="https://image.qwenlm.ai/public_source/6c790bf8-80fd-4c19-90ab-c132465636ef/10e66a1fd-3a36-4930-b622-39fb8782c48d.png" class="w-full h-64 object-cover" alt="Story" onerror="this.style.display='none'" />
+        <div class="p-8">
+          <div class="flex items-center gap-2 mb-3"><span class="text-xs font-semibold px-3 py-1 bg-teal-100 text-teal-700 rounded-full">Education</span><span class="text-xs text-slate-500">• 2 weeks ago</span></div>
+          <h3 class="text-2xl font-bold mb-3">Little Leo's Reading Journey</h3>
+          <p class="text-slate-600 mb-4">Leo struggled with reading until our literacy program paired him with a volunteer tutor. Now, he's the top reader in his class and dreams of becoming a writer.</p>
+          <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center font-bold text-teal-700">M</div><div><div class="font-semibold text-sm">Maria Santos</div><div class="text-xs text-slate-500">Program Director</div></div></div>
+        </div>
+      </div>
+      <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-lg">
+        <img src="https://image.qwenlm.ai/public_source/6c790bf8-80fd-4c19-90ab-c132465636ef/1f8b75515-cc5d-417c-bdd1-b9c51a15592c.png" class="w-full h-64 object-cover" alt="Story" onerror="this.style.display='none'" />
+        <div class="p-8">
+          <div class="flex items-center gap-2 mb-3"><span class="text-xs font-semibold px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full">Environment</span><span class="text-xs text-slate-500">• 1 month ago</span></div>
+          <h3 class="text-2xl font-bold mb-3">Greening the Urban Desert</h3>
+          <p class="text-slate-600 mb-4">What started as a small volunteer group planting trees has become a city-wide movement. Over 5,000 trees planted this year, transforming three neighborhoods.</p>
+          <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center font-bold text-emerald-700">J</div><div><div class="font-semibold text-sm">James Okonkwo</div><div class="text-xs text-slate-500">Lead Volunteer</div></div></div>
+        </div>
+      </div>
+      <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-lg">
+        <div class="w-full h-64 bg-gradient-to-br from-rose-400 to-amber-400 flex items-center justify-center"><div class="text-white text-center"><div class="text-6xl mb-2">🏥</div><div class="text-xl font-bold">Healthcare</div></div></div>
+        <div class="p-8">
+          <div class="flex items-center gap-2 mb-3"><span class="text-xs font-semibold px-3 py-1 bg-rose-100 text-rose-700 rounded-full">Healthcare</span><span class="text-xs text-slate-500">• 3 weeks ago</span></div>
+          <h3 class="text-2xl font-bold mb-3">Mobile Clinics Save Lives</h3>
+          <p class="text-slate-600 mb-4">Our mobile healthcare units reached 1,200 patients in remote villages last month, providing essential checkups and vaccinations to those who need it most.</p>
+          <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center font-bold text-rose-700">D</div><div><div class="font-semibold text-sm">Dr. Aisha Rahman</div><div class="text-xs text-slate-500">Medical Coordinator</div></div></div>
+        </div>
+      </div>
+      <div class="card-hover bg-white rounded-3xl overflow-hidden shadow-lg">
+        <div class="w-full h-64 bg-gradient-to-br from-indigo-400 to-teal-400 flex items-center justify-center"><div class="text-white text-center"><div class="text-6xl mb-2">🍲</div><div class="text-xl font-bold">Food Security</div></div></div>
+        <div class="p-8">
+          <div class="flex items-center gap-2 mb-3"><span class="text-xs font-semibold px-3 py-1 bg-amber-100 text-amber-700 rounded-full">Food</span><span class="text-xs text-slate-500">• 1 week ago</span></div>
+          <h3 class="text-2xl font-bold mb-3">Zero Hunger Community Kitchen</h3>
+          <p class="text-slate-600 mb-4">Our community kitchen now serves 500 meals daily, entirely run by local volunteers and funded by neighborhood donations. A true grassroots success.</p>
+          <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center font-bold text-amber-700">S</div><div><div class="font-semibold text-sm">Sofia Mendez</div><div class="text-xs text-slate-500">Kitchen Manager</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="volunteer" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h2 class="text-5xl font-bold mb-6">Become a <span class="gradient-text">Volunteer</span></h2>
+        <p class="text-slate-600 mb-8 text-lg">Join 350+ passionate individuals making tangible differences in communities. Choose your cause and start today.</p>
+        <div class="space-y-4">
+          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center text-2xl flex-shrink-0 text-teal-600"><i class="fa-solid fa-leaf"></i></div><div><div class="font-bold">Environmental Action</div><div class="text-sm text-slate-600">Tree planting, cleanups, sustainability</div></div></div>
+          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-2xl flex-shrink-0 text-amber-600"><i class="fa-solid fa-book"></i></div><div><div class="font-bold">Education Support</div><div class="text-sm text-slate-600">Tutoring, mentoring, library programs</div></div></div>
+          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-2xl flex-shrink-0 text-rose-600"><i class="fa-solid fa-house-medical"></i></div><div><div class="font-bold">Healthcare Aid</div><div class="text-sm text-slate-600">Medical camps, wellness drives</div></div></div>
+          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center text-2xl flex-shrink-0 text-indigo-600"><i class="fa-solid fa-bowl-rice"></i></div><div><div class="font-bold">Food Distribution</div><div class="text-sm text-slate-600">Kitchens, delivery, farming</div></div></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-xl">
+        <h3 class="text-2xl font-bold mb-6">Application Form</h3>
+        <form id="volunteerForm" class="space-y-4">
+          <div><label class="block text-sm font-semibold mb-1">Full Name</label><input type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4" /></div>
+          <div><label class="block text-sm font-semibold mb-1">Email</label><input type="email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4" /></div>
+          <div><label class="block text-sm font-semibold mb-1">Phone</label><input type="tel" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4" /></div>
+          <div><label class="block text-sm font-semibold mb-1">Area of Interest</label><select class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4"><option>Environmental Action</option><option>Education Support</option><option>Healthcare Aid</option><option>Food Distribution</option></select></div>
+          <div><label class="block text-sm font-semibold mb-1">Why do you want to volunteer?</label><textarea rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4"></textarea></div>
+          <button type="submit" class="btn-primary w-full text-white py-4 rounded-xl font-bold">Submit Application</button>
+        </form>
+        <div id="volSuccess" class="hidden mt-4 p-4 bg-green-50 text-green-700 rounded-xl text-center font-semibold">🎉 Welcome aboard! We'll contact you within 48 hours.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+      <div>
+        <div class="text-sm font-semibold text-teal-600 mb-2">ABOUT US</div>
+        <h2 class="text-5xl font-bold mb-6">Our Mission & Vision</h2>
+        <p class="text-slate-600 mb-4 text-lg">Founded in 2015, HopeNet is a global nonprofit dedicated to empowering underserved communities through education, healthcare, food security, and environmental action.</p>
+        <p class="text-slate-600 mb-6">We believe in radical transparency, community-driven solutions, and the power of collective action. Every project we undertake is designed with and for the communities we serve.</p>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-teal-50 rounded-2xl p-5"><div class="text-3xl font-bold text-teal-600">10+</div><div class="text-sm text-slate-600">Countries</div></div>
+          <div class="bg-amber-50 rounded-2xl p-5"><div class="text-3xl font-bold text-amber-600">50K+</div><div class="text-sm text-slate-600">Lives Touched</div></div>
+          <div class="bg-rose-50 rounded-2xl p-5"><div class="text-3xl font-bold text-rose-600">98%</div><div class="text-sm text-slate-600">Funds to Programs</div></div>
+          <div class="bg-indigo-50 rounded-2xl p-5"><div class="text-3xl font-bold text-indigo-600">A+</div><div class="text-sm text-slate-600">Charity Rating</div></div>
+        </div>
+      </div>
+      <div class="rounded-3xl overflow-hidden shadow-2xl floating">
+        <img src="https://image.qwenlm.ai/public_source/6c790bf8-80fd-4c19-90ab-c132465636ef/18d320041-ca43-4e41-be91-c5489792a0f7.png" class="w-full h-full object-cover" alt="Team" onerror="this.style.display='none'" />
+      </div>
+    </div>
+    <h3 class="text-3xl font-bold mb-8 text-center">Meet Our Leadership</h3>
+    <div class="grid md:grid-cols-4 gap-6">
+      <div class="bg-white rounded-2xl p-6 text-center card-hover"><div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-2xl font-bold mb-3">AR</div><div class="font-bold">Aisha Rahman</div><div class="text-sm text-slate-500">Executive Director</div></div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover"><div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-2xl font-bold mb-3">JO</div><div class="font-bold">James Okonkwo</div><div class="text-sm text-slate-500">Head of Operations</div></div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover"><div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white text-2xl font-bold mb-3">SM</div><div class="font-bold">Sofia Mendez</div><div class="text-sm text-slate-500">Community Lead</div></div>
+      <div class="bg-white rounded-2xl p-6 text-center card-hover"><div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold mb-3">DK</div><div class="font-bold">David Kim</div><div class="text-sm text-slate-500">Finance Director</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-5xl font-bold mb-4">Get in <span class="gradient-text">Touch</span></h2>
+      <p class="text-slate-600 max-w-2xl mx-auto">We'd love to hear from you. Reach out with questions, partnerships, or just to say hello.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white rounded-3xl p-8 shadow-lg card-hover text-center">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-teal-100 flex items-center justify-center text-3xl text-teal-600 mb-4"><i class="fa-solid fa-envelope"></i></div>
+        <h3 class="font-bold mb-2">Email Us</h3>
+        <p class="text-slate-600 text-sm">hello@hopenet.org</p>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg card-hover text-center">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-100 flex items-center justify-center text-3xl text-amber-600 mb-4"><i class="fa-solid fa-phone"></i></div>
+        <h3 class="font-bold mb-2">Call Us</h3>
+        <p class="text-slate-600 text-sm">+1 (555) 123-4567</p>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg card-hover text-center">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-100 flex items-center justify-center text-3xl text-rose-600 mb-4"><i class="fa-solid fa-location-dot"></i></div>
+        <h3 class="font-bold mb-2">Visit Us</h3>
+        <p class="text-slate-600 text-sm">123 Hope Street<br />San Francisco, CA</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-3xl p-8 md:p-12 shadow-xl mt-12 max-w-3xl mx-auto">
+      <form id="contactForm" class="space-y-4">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div><label class="block text-sm font-semibold mb-1">Name</label><input type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4" /></div>
+          <div><label class="block text-sm font-semibold mb-1">Email</label><input type="email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4" /></div>
+        </div>
+        <div><label class="block text-sm font-semibold mb-1">Subject</label><input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4" /></div>
+        <div><label class="block text-sm font-semibold mb-1">Message</label><textarea rows="5" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4"></textarea></div>
+        <button type="submit" class="btn-primary w-full text-white py-4 rounded-xl font-bold">Send Message</button>
+      </form>
+      <div id="contactSuccess" class="hidden mt-4 p-4 bg-green-50 text-green-700 rounded-xl text-center font-semibold">✅ Message sent! We'll get back to you soon.</div>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
+      <div>
+        <h2 class="text-4xl font-bold mb-2">Live Impact Dashboard</h2>
+        <p class="text-slate-600">Real-time metrics updated every second</p>
+      </div>
+      <div class="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full font-semibold">
+        <span class="pulse-dot"></span>
+        <span>LIVE</span>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="stat-card"><div class="text-sm text-slate-500 mb-1">Total Donors</div><div class="text-3xl font-bold text-teal-600" id="dashDonors">12,847</div><div class="text-xs text-green-600 mt-1">▲ +23 today</div></div>
+      <div class="stat-card"><div class="text-sm text-slate-500 mb-1">Funds Raised</div><div class="text-3xl font-bold text-amber-500" id="dashFunds">$2,847,293</div><div class="text-xs text-green-600 mt-1">▲ +$1,240 today</div></div>
+      <div class="stat-card"><div class="text-sm text-slate-500 mb-1">Lives Impacted</div><div class="text-3xl font-bold text-rose-500" id="dashLives">51,204</div><div class="text-xs text-green-600 mt-1">▲ +47 this week</div></div>
+      <div class="stat-card"><div class="text-sm text-slate-500 mb-1">Active Projects</div><div class="text-3xl font-bold text-indigo-500" id="dashProjects">124</div><div class="text-xs text-green-600 mt-1">▲ +2 new</div></div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-3xl p-8 shadow-lg">
+        <h3 class="font-bold mb-4">Donations (Last 7 Days)</h3>
+        <div class="space-y-3">
+          <div><div class="flex justify-between text-sm mb-1"><span>Mon</span><span class="font-semibold">$4,230</span></div><div class="h-3 bg-slate-100 rounded-full"><div class="h-full bg-teal-500 rounded-full" style="width:60%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span>Tue</span><span class="font-semibold">$5,890</span></div><div class="h-3 bg-slate-100 rounded-full"><div class="h-full bg-teal-500 rounded-full" style="width:80%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span>Wed</span><span class="font-semibold">$3,420</span></div><div class="h-3 bg-slate-100 rounded-full"><div class="h-full bg-teal-500 rounded-full" style="width:45%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span>Thu</span><span class="font-semibold">$7,100</span></div><div class="h-3 bg-slate-100 rounded-full"><div class="h-full bg-teal-500 rounded-full" style="width:95%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span>Fri</span><span class="font-semibold">$6,500</span></div><div class="h-3 bg-slate-100 rounded-full"><div class="h-full bg-teal-500 rounded-full" style="width:85%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span>Sat</span><span class="font-semibold">$8,900</span></div><div class="h-3 bg-slate-100 rounded-full"><div class="h-full bg-teal-500 rounded-full" style="width:100%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span>Sun</span><span class="font-semibold">$5,200</span></div><div class="h-3 bg-slate-100 rounded-full"><div class="h-full bg-teal-500 rounded-full" style="width:70%"></div></div></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg">
+        <h3 class="font-bold mb-4">Recent Activity Feed</h3>
+        <div id="activityFeed" class="space-y-3 max-h-80 overflow-y-auto"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="emergency" class="page-section">
+  <div class="max-w-5xl mx-auto px-6 py-16">
+    <div class="bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 rounded-3xl p-10 md:p-16 text-white text-center shadow-2xl">
+      <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full mb-6">
+        <span class="pulse-dot" style="background:white"></span>
+        <span class="text-sm font-semibold">URGENT CAMPAIGN</span>
+      </div>
+      <h2 class="text-4xl md:text-6xl font-bold mb-4">Hurricane Relief Fund 2026</h2>
+      <p class="text-white/90 text-lg max-w-2xl mx-auto mb-10">Thousands of families have lost their homes. Your emergency donation provides immediate shelter, food, and medical care.</p>
+      <div class="max-w-2xl mx-auto mb-8">
+        <div class="flex justify-between text-sm font-semibold mb-2"><span>Raised: <span id="emRaised">$847,200</span></span><span>Goal: $1,200,000</span></div>
+        <div class="h-5 bg-white/20 rounded-full overflow-hidden backdrop-blur-md">
+          <div id="emProgress" class="progress-fill h-full rounded-full" style="width:70%"></div>
+        </div>
+        <div class="text-sm mt-2 font-semibold">70.6% funded • 2,847 donors</div>
+      </div>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button class="bg-white text-rose-600 px-8 py-4 rounded-full font-bold hover:bg-rose-50 transition" onclick="quickDonate(25)">$25</button>
+        <button class="bg-white text-rose-600 px-8 py-4 rounded-full font-bold hover:bg-rose-50 transition" onclick="quickDonate(50)">$50</button>
+        <button class="bg-white text-rose-600 px-8 py-4 rounded-full font-bold hover:bg-rose-50 transition" onclick="quickDonate(100)">$100</button>
+        <button class="bg-rose-600 text-white px-8 py-4 rounded-full font-bold hover:bg-rose-700 transition ring-4 ring-white/30" onclick="quickDonate(250)">$250 ⭐</button>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 mt-8">
+      <div class="bg-white rounded-3xl p-8 shadow-lg"><div class="text-3xl text-rose-500 mb-3"><i class="fa-solid fa-campground"></i></div><h4 class="font-bold mb-2">Emergency Shelter</h4><p class="text-sm text-slate-600">Provides temporary housing for a family of 4 for one month.</p></div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg"><div class="text-3xl text-amber-500 mb-3"><i class="fa-solid fa-box-tissue"></i></div><h4 class="font-bold mb-2">Food Packages</h4><p class="text-sm text-slate-600">Delivers 30 days of nutritious meals to affected families.</p></div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg"><div class="text-3xl text-teal-500 mb-3"><i class="fa-solid fa-kit-medical"></i></div><h4 class="font-bold mb-2">Medical Aid</h4><p class="text-sm text-slate-600">Covers essential medical supplies and first-aid kits.</p></div>
+    </div>
+    <div id="quickDonateMsg" class="hidden mt-6 p-4 bg-green-50 text-green-700 rounded-xl text-center font-semibold">Thank you for your emergency contribution! </div>
+  </div>
+</section>
+
+<section id="transparency" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-5xl font-bold mb-4">Our <span class="gradient-text">Transparency</span> Commitment</h2>
+      <p class="text-slate-600 max-w-2xl mx-auto">We believe donors deserve to know exactly where their money goes. Here are our official documents and audit reports.</p>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="bg-white rounded-3xl p-8 shadow-lg card-hover border-l-4 border-teal-500">
+        <div class="text-4xl text-teal-600 mb-3"><i class="fa-regular fa-file-pdf"></i></div>
+        <h3 class="font-bold text-lg mb-2">Annual Report 2025</h3>
+        <p class="text-sm text-slate-600 mb-4">Complete overview of programs, finances, and impact.</p>
+        <button class="text-teal-600 font-semibold text-sm hover:underline">Download PDF →</button>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg card-hover border-l-4 border-amber-500">
+        <div class="text-4xl text-amber-500 mb-3"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+        <h3 class="font-bold text-lg mb-2">Financial Audit 2025</h3>
+        <p class="text-sm text-slate-600 mb-4">Independent audit by Ernst & Young. Clean opinion.</p>
+        <button class="text-amber-600 font-semibold text-sm hover:underline">Download PDF →</button>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg card-hover border-l-4 border-rose-500">
+        <div class="text-4xl text-rose-500 mb-3"><i class="fa-solid fa-chart-line"></i></div>
+        <h3 class="font-bold text-lg mb-2">Impact Metrics Q1 2026</h3>
+        <p class="text-sm text-slate-600 mb-4">Quarterly breakdown of beneficiaries and outcomes.</p>
+        <button class="text-rose-600 font-semibold text-sm hover:underline">Download PDF →</button>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg card-hover border-l-4 border-indigo-500">
+        <div class="text-4xl text-indigo-600 mb-3"><i class="fa-solid fa-receipt"></i></div>
+        <h3 class="font-bold text-lg mb-2">IRS Form 990</h3>
+        <p class="text-sm text-slate-600 mb-4">Official tax filing for fiscal year 2025.</p>
+        <button class="text-indigo-600 font-semibold text-sm hover:underline">Download PDF →</button>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg card-hover border-l-4 border-emerald-500">
+        <div class="text-4xl text-emerald-600 mb-3"><i class="fa-solid fa-clipboard-list"></i></div>
+        <h3 class="font-bold text-lg mb-2">Board Meeting Minutes</h3>
+        <p class="text-sm text-slate-600 mb-4">Public records of quarterly board decisions.</p>
+        <button class="text-emerald-600 font-semibold text-sm hover:underline">View Records →</button>
+      </div>
+      <div class="bg-white rounded-3xl p-8 shadow-lg card-hover border-l-4 border-purple-500">
+        <div class="text-4xl text-purple-600 mb-3"><i class="fa-solid fa-award"></i></div>
+        <h3 class="font-bold text-lg mb-2">Charity Navigator Rating</h3>
+        <p class="text-sm text-slate-600 mb-4">4-star rating for accountability and transparency.</p>
+        <button class="text-purple-600 font-semibold text-sm hover:underline">View Rating →</button>
+      </div>
+    </div>
+    <div class="mt-12 bg-gradient-to-r from-teal-50 to-amber-50 rounded-3xl p-10 text-center">
+      <h3 class="text-2xl font-bold mb-3">Have Questions About Our Finances?</h3>
+      <p class="text-slate-600 mb-4">Our finance team is happy to walk you through any document.</p>
+      <a href="#contact" class="btn-primary text-white px-6 py-3 rounded-full font-semibold inline-block" data-page="contact">Contact Finance Team</a>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="page-section">
+  <div class="max-w-4xl mx-auto px-6 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-5xl font-bold mb-4">Frequently Asked <span class="gradient-text">Questions</span></h2>
+      <p class="text-slate-600">Everything you need to know about HopeNet</p>
+    </div>
+    <div class="space-y-4" id="faqContainer">
+      <div class="faq-item bg-white rounded-2xl shadow-md overflow-hidden"><button class="faq-btn w-full text-left p-6 flex justify-between items-center font-semibold"><span>Is my donation tax-deductible?</span><span class="faq-icon text-2xl text-teal-500">+</span></button><div class="faq-answer px-6 pb-6"><p class="text-slate-600">Yes! HopeNet is a registered 501(c)(3) nonprofit organization. All donations are tax-deductible to the extent allowed by law. You'll receive an automatic tax receipt via email.</p></div></div>
+      <div class="faq-item bg-white rounded-2xl shadow-md overflow-hidden"><button class="faq-btn w-full text-left p-6 flex justify-between items-center font-semibold"><span>How is my donation used?</span><span class="faq-icon text-2xl text-teal-500">+</span></button><div class="faq-answer px-6 pb-6"><p class="text-slate-600">98 cents of every dollar goes directly to our programs. Only 2% is used for administrative costs. Check our Transparency page for detailed breakdowns.</p></div></div>
+      <div class="faq-item bg-white rounded-2xl shadow-md overflow-hidden"><button class="faq-btn w-full text-left p-6 flex justify-between items-center font-semibold"><span>Can I cancel my monthly donation?</span><span class="faq-icon text-2xl text-teal-500">+</span></button><div class="faq-answer px-6 pb-6"><p class="text-slate-600">Absolutely. You can cancel, pause, or modify your monthly donation at any time through your donor dashboard or by contacting our support team.</p></div></div>
+      <div class="faq-item bg-white rounded-2xl shadow-md overflow-hidden"><button class="faq-btn w-full text-left p-6 flex justify-between items-center font-semibold"><span>How do I become a volunteer?</span><span class="faq-icon text-2xl text-teal-500">+</span></button><div class="faq-answer px-6 pb-6"><p class="text-slate-600">Fill out our Volunteer Application form on the Volunteer page. We'll review your application and reach out within 48 hours with next steps.</p></div></div>
+      <div class="faq-item bg-white rounded-2xl shadow-md overflow-hidden"><button class="faq-btn w-full text-left p-6 flex justify-between items-center font-semibold"><span>Is my payment information secure?</span><span class="faq-icon text-2xl text-teal-500">+</span></button><div class="faq-answer px-6 pb-6"><p class="text-slate-600">Yes. We use industry-standard SSL encryption and PCI-compliant payment processors. We never store your credit card information on our servers.</p></div></div>
+      <div class="faq-item bg-white rounded-2xl shadow-md overflow-hidden"><button class="faq-btn w-full text-left p-6 flex justify-between items-center font-semibold"><span>Can I donate cryptocurrency?</span><span class="faq-icon text-2xl text-teal-500">+</span></button><div class="faq-answer px-6 pb-6"><p class="text-slate-600">Yes! We accept Bitcoin, Ethereum, and other major cryptocurrencies through our partnership with The Giving Block.</p></div></div>
+      <div class="faq-item bg-white rounded-2xl shadow-md overflow-hidden"><button class="faq-btn w-full text-left p-6 flex justify-between items-center font-semibold"><span>How can I track the impact of my donation?</span><span class="faq-icon text-2xl text-teal-500">+</span></button><div class="faq-answer px-6 pb-6"><p class="text-slate-600">Every donor receives quarterly impact reports via email. You can also view real-time metrics on our Live Dashboard.</p></div></div>
+      <div class="faq-item bg-white rounded-2xl shadow-md overflow-hidden"><button class="faq-btn w-full text-left p-6 flex justify-between items-center font-semibold"><span>Do you accept corporate sponsorships?</span><span class="faq-icon text-2xl text-teal-500">+</span></button><div class="faq-answer px-6 pb-6"><p class="text-slate-600">Yes! We offer various partnership tiers for businesses. Please contact our partnerships team at partners@hopenet.org.</p></div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="bg-slate-900 text-white mt-20">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <div class="grid md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-4"><div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-teal-400 flex items-center justify-center text-white font-bold text-xl">H</div><span class="text-xl font-bold">Hope<span class="text-teal-400">Net</span></span></div>
+        <p class="text-slate-400 text-sm">Empowering communities through collective action since 2015.</p>
+      </div>
+      <div><h4 class="font-bold mb-3">Explore</h4><ul class="space-y-2 text-sm text-slate-400"><li><a href="#home" class="hover:text-white" data-page="home">Home</a></li><li><a href="#about" class="hover:text-white" data-page="about">About</a></li><li><a href="#stories" class="hover:text-white" data-page="stories">Stories</a></li><li><a href="#contact" class="hover:text-white" data-page="contact">Contact</a></li></ul></div>
+      <div><h4 class="font-bold mb-3">Get Involved</h4><ul class="space-y-2 text-sm text-slate-400"><li><a href="#donate" class="hover:text-white" data-page="donate">Donate</a></li><li><a href="#volunteer" class="hover:text-white" data-page="volunteer">Volunteer</a></li><li><a href="#emergency" class="hover:text-white" data-page="emergency">Emergency Fund</a></li><li><a href="#dashboard" class="hover:text-white" data-page="dashboard">Dashboard</a></li></ul></div>
+      <div><h4 class="font-bold mb-3">Accountability</h4><ul class="space-y-2 text-sm text-slate-400"><li><a href="#transparency" class="hover:text-white" data-page="transparency">Transparency</a></li><li><a href="#expenses" class="hover:text-white" data-page="expenses">Expenses</a></li><li><a href="#report" class="hover:text-white" data-page="report">Daily Report</a></li><li><a href="#faq" class="hover:text-white" data-page="faq">FAQ</a></li></ul></div>
+    </div>
+    <div class="border-t border-slate-800 pt-8 flex flex-wrap justify-between items-center gap-4 text-sm text-slate-500">
+      <div>© 2026 HopeNet. All rights reserved.</div>
+      <div class="flex gap-6"><a href="#" class="hover:text-white">Privacy</a><a href="#" class="hover:text-white">Terms</a><a href="#" class="hover:text-white">Cookies</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Navigation / Router
+const pages = document.querySelectorAll('.page-section');
+const navLinks = document.querySelectorAll('.nav-link');
+const mobileMenu = document.getElementById('mobileMenu');
+const menuToggle = document.getElementById('menuToggle');
+const menuClose = document.getElementById('menuClose');
+const moreBtn = document.getElementById('moreBtn');
+const moreDropdown = document.getElementById('moreDropdown');
+
+function navigateTo(pageId) {
+  const target = document.getElementById(pageId);
+  if (!target) return;
+  const current = document.querySelector('.page-section.active');
+  if (current === target) return;
+  
+  if (current) {
+    gsap.to(current, { 
+      opacity: 0, 
+      y: -20, 
+      duration: 0.3, 
+      onComplete: () => {
+        current.classList.remove('active');
+        current.style.display = 'none';
+        target.style.display = 'block';
+        target.classList.add('active');
+        gsap.fromTo(target, 
+          { opacity: 0, y: 30 }, 
+          { 
+            opacity: 1, 
+            y: 0, 
+            duration: 0.5, 
+            ease: 'power2.out', 
+            onComplete: () => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              animateSection(target);
+            }
+          }
+        );
+      }
+    });
+  } else {
+    target.style.display = 'block';
+    target.classList.add('active');
+    gsap.fromTo(target, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5 });
+    animateSection(target);
+  }
+  
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('data-page') === pageId);
+  });
+  
+  window.location.hash = pageId;
+  mobileMenu.classList.remove('open');
+  moreDropdown.classList.add('hidden');
+}
+
+navLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const page = link.getAttribute('data-page');
+    if (page) navigateTo(page);
+  });
+});
+
+menuToggle.addEventListener('click', () => mobileMenu.classList.add('open'));
+menuClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
+moreBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  moreDropdown.classList.toggle('hidden');
+});
+document.addEventListener('click', (e) => {
+  if (!moreDropdown.contains(e.target) && !moreBtn.contains(e.target)) moreDropdown.classList.add('hidden');
+});
+
+// Animate section content
+function animateSection(section) {
+  const counters = section.querySelectorAll('[data-count]');
+  counters.forEach(counter => {
+    const target = parseInt(counter.getAttribute('data-count'));
+    if (isNaN(target)) return;
+    const duration = 1500;
+    const steps = 60;
+    const stepTime = duration / steps;
+    const stepValue = target / steps;
+    let current = 0;
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      current = Math.round((target / steps) * step);
+      if (step >= steps) { 
+        current = target; 
+        clearInterval(interval); 
+      }
+      counter.textContent = current.toLocaleString();
+    }, stepTime);
+  });
+}
+
+// Initialize home animations on load securely
+document.addEventListener('DOMContentLoaded', () => {
+  const homeSection = document.getElementById('home');
+  if (homeSection) {
+    homeSection.style.display = 'block';
+    homeSection.classList.add('active');
+    homeSection.style.opacity = '1';
+    
+    // Smooth GSAP reveal for hero section elements
+    gsap.fromTo("#home .fade-in", 
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: "power2.out" }
+    );
+    
+    animateSection(homeSection);
+  }
+});
+
+// If hash exists on load
+if (window.location.hash && window.location.hash !== '#home') {
+  const initial = window.location.hash.slice(1);
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById(initial)) {
+      document.querySelectorAll('.page-section').forEach(s => { 
+        s.classList.remove('active'); 
+        s.style.display = 'none'; 
+        s.style.opacity = '0';
+      });
+      setTimeout(() => navigateTo(initial), 100);
+    }
+  });
+}
+
+// Daily Report data
+const reportData = [
+  { time: '08:15', activity: 'Morning meal distribution', location: 'Community Center', status: 'Completed', impact: '342 meals', statusColor: 'green' },
+  { time: '10:30', activity: 'Literacy tutoring session', location: 'Sunrise School', status: 'In Progress', impact: '28 students', statusColor: 'amber' },
+  { time: '12:00', activity: 'Mobile health clinic', location: 'District 7', status: 'Scheduled', impact: '150 patients', statusColor: 'blue' },
+  { time: '14:45', activity: 'Tree planting drive', location: 'Riverside Park', status: 'In Progress', impact: '45 trees', statusColor: 'amber' },
+  { time: '16:20', activity: 'Volunteer training', location: 'Main Office', status: 'Scheduled', impact: '12 volunteers', statusColor: 'blue' },
+  { time: '18:00', activity: 'Evening shelter setup', location: 'Downtown Hub', status: 'Pending', impact: '60 families', statusColor: 'slate' }
+];
+const reportTable = document.getElementById('reportTable');
+if(reportTable) {
+  reportData.forEach(r => {
+    const colorMap = { green: 'bg-green-100 text-green-700', amber: 'bg-amber-100 text-amber-700', blue: 'bg-blue-100 text-blue-700', slate: 'bg-slate-100 text-slate-700' };
+    reportTable.innerHTML += `<tr><td class="p-4 text-sm font-mono">${r.time}</td><td class="p-4 text-sm font-semibold">${r.activity}</td><td class="p-4 text-sm">${r.location}</td><td class="p-4 text-sm"><span class="px-2 py-1 rounded-full text-xs font-semibold ${colorMap[r.statusColor]}">${r.status}</span></td><td class="p-4 text-sm font-bold text-teal-600">${r.impact}</td></tr>`;
+  });
+}
+
+// Activity feed
+const activities = [
+  '🎉 New donation of $250 from Sarah M.',
+  '📚 15 books donated to Sunrise Library',
+  '🌱 Volunteer team planted 30 trees in Riverside',
+  '💝 Monthly donor John renewed subscription',
+  '🏥 Mobile clinic treated 42 patients today',
+  '🍲 200 meals prepared at Community Kitchen',
+  '⭐ Corporate sponsor matched $5,000',
+  '📬 Thank-you letters sent to 50 donors'
+];
+const feed = document.getElementById('activityFeed');
+if(feed) {
+  activities.forEach((a, i) => {
+    feed.innerHTML += `<div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl text-sm" style="animation-delay:${i*0.1}s"><span>${a}</span></div>`;
+  });
+}
+
+// Donate interactions Fix
+document.querySelectorAll('.donate-tier').forEach(tier => {
+  tier.addEventListener('click', () => {
+    document.querySelectorAll('.donate-tier').forEach(t => {
+      t.classList.remove('ring-4', 'ring-teal-200', 'from-teal-500', 'to-teal-700', 'text-white', 'border-teal-400');
+      t.classList.add('bg-white', 'border-slate-100');
+      // Reset text colors inside tiers if necessary
+      const pText = t.querySelector('p');
+      if(pText) pText.className = "text-slate-600 text-sm";
+    });
+    
+    tier.classList.remove('bg-white', 'border-slate-100');
+    tier.classList.add('ring-4', 'ring-teal-200', 'from-teal-500', 'to-teal-700', 'text-white', 'border-teal-400');
+    
+    const pTextActive = tier.querySelector('p');
+    if(pTextActive) pTextActive.className = "text-white/90 text-sm";
+    
+    document.getElementById('donateAmount').value = tier.getAttribute('data-amount');
+  });
+});
+
+document.querySelectorAll('.freq-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.freq-btn').forEach(b => { b.classList.remove('bg-teal-500', 'text-white'); b.classList.add('bg-slate-100', 'text-slate-700'); });
+    btn.classList.remove('bg-slate-100', 'text-slate-700');
+    btn.classList.add('bg-teal-500', 'text-white');
+  });
+});
+
+document.getElementById('donateBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('donateSuccess').classList.remove('hidden');
+  setTimeout(() => document.getElementById('donateSuccess').classList.add('hidden'), 4000);
+});
+
+// Volunteer form
+document.getElementById('volunteerForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  document.getElementById('volSuccess').classList.remove('hidden');
+  e.target.reset();
+  setTimeout(() => document.getElementById('volSuccess').classList.add('hidden'), 4000);
+});
+
+// Contact form
+document.getElementById('contactForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  document.getElementById('contactSuccess').classList.remove('hidden');
+  e.target.reset();
+  setTimeout(() => document.getElementById('contactSuccess').classList.add('hidden'), 4000);
+});
+
+// FAQ
+document.querySelectorAll('.faq-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+// Emergency quick donate
+function quickDonate(amount) {
+  const msg = document.getElementById('quickDonateMsg');
+  if(msg) {
+    msg.innerHTML = `⚙️ Thank you! Your $${amount} emergency contribution has been received.`;
+    msg.classList.remove('hidden');
+    setTimeout(() => msg.classList.add('hidden'), 4000);
+  }
+}
+
+// Live dashboard simulation
+let donorCount = 12847, fundAmount = 2847293, livesCount = 51204, projectsCount = 124;
+function updateDashboard() {
+  if (Math.random() > 0.7) donorCount += Math.floor(Math.random() * 3);
+  if (Math.random() > 0.6) fundAmount += Math.floor(Math.random() * 500) + 100;
+  if (Math.random() > 0.8) livesCount += Math.floor(Math.random() * 5);
+  
+  const dDonors = document.getElementById('dashDonors');
+  const dFunds = document.getElementById('dashFunds');
+  const dLives = document.getElementById('dashLives');
+  const dProjects = document.getElementById('dashProjects');
+  
+  if(dDonors) dDonors.textContent = donorCount.toLocaleString();
+  if(dFunds) dFunds.textContent = '$' + fundAmount.toLocaleString();
+  if(dLives) dLives.textContent = livesCount.toLocaleString();
+  if(dProjects) dProjects.textContent = projectsCount;
+}
+setInterval(updateDashboard, 2000);
+</script>
+</body>
+</html>
