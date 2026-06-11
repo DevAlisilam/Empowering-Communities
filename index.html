@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HopeNet — Empowering Communities</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<style>
+  :root {
+    --brand: #0f766e;
+    --brand-light: #14b8a6;
+    --accent: #f59e0b;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: #f8fafc; overflow-x: hidden; }
+  .page-section { display: none; opacity: 0; }
+  .page-section.active { display: block; opacity: 1; }
+  .nav-link { transition: all 0.3s ease; cursor: pointer; }
+  .nav-link.active { color: var(--brand-light); font-weight: 600; }
+  .nav-link:hover { color: var(--brand-light); }
+  .gradient-text {
+    background: linear-gradient(135deg, #0f766e, #14b8a6, #f59e0b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glass {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 118, 110, 0.5);
+  }
+  .card-hover { transition: all 0.4s ease; }
+  .card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+  .pulse-dot {
+    width: 10px; height: 10px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+    100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  }
+  .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .faq-item.open .faq-answer { max-height: 300px; }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-icon { transition: transform 0.3s ease; }
+  .progress-fill {
+    transition: width 1.5s ease;
+    background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+  }
+  .bar {
+    animation: growBar 1.5s ease forwards;
+    transform-origin: bottom;
+  }
+  @keyframes growBar {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+  .mobile-menu {
+    transform: translateX(100%);
+    transition: transform 0.4s ease;
+  }
+  .mobile-menu.open { transform: translateX(0); }
+  .stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  input, textarea, select { transition: all 0.3s ease; }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--brand-light);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
+  }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #0f766e; border-radius: 4px; }
+  .floating { animation: float 6s ease-in-out infinite; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.6) 50%, rgba(15, 23, 42, 0.3) 100%);
+    z-index: 1;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 5rem 1.5rem;
+  }
+</style>
+</head>
+<body class="text-slate-800">
+
+<nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-200/50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#home" class="nav-link flex items-center gap-2" data-page="home">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-teal-400 flex items-center justify-center text-white font-bold text-xl shadow-lg">H</div>
+      <span class="text-xl font-bold tracking-tight">Hope<span class="text-teal-500">Net</span></span>
+    </a>
+    <div class="hidden lg:flex items-center gap-1 text-sm">
+      <a href="#home" class="nav-link px-3 py-2 rounded-lg active" data-page="home">Home</a>
+      <a href="#donate" class="nav-link px-3 py-2 rounded-lg" data-page="donate">Donate</a>
+      <a href="#dashboard" class="nav-link px-3 py-2 rounded-lg" data-page="dashboard">Dashboard</a>
+      <a href="#stories" class="nav-link px-3 py-2 rounded-lg" data-page="stories">Stories</a>
+      <a href="#volunteer" class="nav-link px-3 py-2 rounded-lg" data-page="volunteer">Volunteer</a>
+      <a href="#about" class="nav-link px-3 py-2 rounded-lg" data-page="about">About</a>
+      <button id="moreBtn" class="nav-link px-3 py-2 rounded-lg">More ▾</button>
+    </div>
+    <div class="hidden lg:block">
+      <a href="#donate" class="btn-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold" data-page="donate">Donate Now</a>
+    </div>
+    <button id="menuToggle" class="lg:hidden p-2">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="moreDropdown" class="hidden absolute right-10 top-full mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50">
+    <a href="#report" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="report">Daily Report</a>
+    <a href="#expenses" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="expenses">Expense History</a>
+    <a href="#emergency" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="emergency">Emergency Fund</a>
+    <a href="#transparency" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="transparency">Transparency</a>
+    <a href="#contact" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="contact">Contact</a>
+    <a href="#faq" class="nav-link block px-4 py-3 hover:bg-slate-50" data-page="faq">FAQ</a>
+  </div>
+</nav>
+
+<div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-80 bg-white z-50 shadow-2xl p-6 lg:hidden overflow-y-auto">
+  <button id="menuClose" class="absolute top-4 right-4 p-2">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+  </button>
+  <div class="mt-12 space-y-1">
+    <a href="#home" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50 active" data-page="home">🏠 Home</a>
+    <a href="#donate" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="donate">💝 Donate</a>
+    <a href="#report" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="report">📊 Daily Report</a>
+    <a href="#expenses" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="expenses">💸 Expense History</a>
+    <a href="#stories" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="stories">✨ Success Stories</a>
+    <a href="#volunteer" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="volunteer">🙌 Volunteer</a>
+    <a href="#about" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="about">ℹ️ About Us</a>
+    <a href="#contact" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="contact">📞 Contact</a>
+    <a href="#dashboard" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="dashboard">📈 Live Dashboard</a>
+    <a href="#emergency" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="emergency">🚨 Emergency Fund</a>
+    <a href="#transparency" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="transparency">💎 Transparency</a>
+    <a href="#faq" class="nav-link block px-4 py-3 rounded-lg hover:bg-slate-50" data-page="faq">❓ FAQ</a>
+  </div>
+</div>
+
+<main class="pt-20">
+
+<section id="home" class="page-section active">
+  <div class="hero-section">
+    <img src="https://image.qwenlm.ai/public_source/6c790bf8-80fd-4c19-90ab-c132465636ef/123002a3e-f1e3-4138-9ac5-2c2c75e1c301.png" class="hero-bg" alt="Community" onerror="this.style.display='none'" />
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="max-w-2xl text-white">
+        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full mb-6 fade-in" style="animation-delay: 0.1s;">
+          <span class="pulse-dot"></span>
+          <span class="text-sm font-medium">Making an impact since 2015</span>
+        </div>
+        <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6 fade-in" style="animation-delay: 0.2s;">
+          Building Hope,<br />
+          <span class="gradient-text">One Community</span><br />
+          at a Time
+        </h1>
+        <p class="text-lg md:text-xl text-slate-200 mb-8 fade-in" style="animation-delay: 0.3s;">Join 50,000+ donors and volunteers working together to create lasting change in underserved communities worldwide.</p>
+        <div class="flex flex-wrap gap-4 fade-in" style="animation-delay: 0.4s;">
+          <a href="#donate" class="btn-primary text-white px-8 py-4 rounded-full font-semibold" data-page="donate">Donate Now →</a>
+          <a href="#volunteer" class="bg-white/10 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-full font-semibold hover:bg-white/20 transition" data-page="volunteer">Join as Volunteer</a>
+        </div>
+      </div>
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 fade-in" style="animation-delay: 0.5s;">
+        <div class="stat-card"><div class="text-3xl font-bold text-teal-600" id="dashDonors">12,847</div><div class="text-sm text-slate-600 mt-1">Lives Impacted</div></div>
+        <div class="stat-card"><div class="text-3xl font-bold text-amber-500" id="dashProjects">124</div><div class="text-sm text-slate-600 mt-1">Active Projects</div></div>
+        <div class="stat-card"><div class="text-3xl font-bold text-rose-500" id="dashFunds">$2,847,293</div><div class="text-sm text-slate-600 mt-1">Funds Raised ($)</div></div>
+        <div class="stat-card"><div class="text-3xl font-bold text-indigo-500" id="dashLives">51,204</div><div class="text-sm text-slate-600 mt-1">Volunteers</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="donate" class="page-section">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-5xl font-bold mb-4">Make a <span class="gradient-text">Difference</span> Today</h2>
+      <p class="text-slate-600 text-lg max-w-2xl mx-auto">100% of your donation goes directly to our programs. Every dollar counts.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="card-hover bg-white rounded-3xl p-8 border-2 border-slate-100 cursor-pointer donate-tier" data-amount="25">
+        <div class="text-sm font-semibold text-teal-600 mb-2">SEED</div>
+        <div class="text-4xl font-bold mb-4">$25</div>
+        <p class="text-slate-600 text-sm">Provides school supplies for one child for an entire year.</p>
+      </div>
+      <div class="card-hover bg-gradient-to-br from-teal-500 to-teal-700 text-white rounded-3xl p-8 border-2 border-teal-400 cursor-pointer donate-tier ring-4 ring-teal-200" data-amount="100">
+        <div class="text-sm font-semibold mb-2 opacity-90">GROWER ⭐</div>
+        <div class="text-4xl font-bold mb-4">$100</div>
+        <p class="text-white/90 text-sm">Funds a week of meals for a family in need.</p>
+      </div>
+      <div class="card-hover bg-white rounded-3xl p-8 border-2 border-slate-100 cursor-pointer donate-tier" data-amount="500">
+        <div class="text-sm font-semibold text-amber-500 mb-2">CHAMPION</div>
+        <div class="text-4xl font-bold mb-4">$500</div>
+        <p class="text-slate-600 text-sm">Sponsors a community health checkup event.</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-3xl p-8 md:p-12 shadow-xl max-w-2xl mx-auto">
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-2">Custom Amount</label>
+        <div class="relative">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">$</span>
+          <input id="donateAmount" type="number" value="100" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-4 pl-10 pr-4 text-2xl font-bold" />
+        </div>
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-2">Donation Frequency</label>
+        <div class="grid grid-cols-2 gap-3">
+          <button class="freq-btn bg-teal-500 text-white py-3 rounded-xl font-semibold" data-freq="monthly">Monthly</button>
+          <button class="freq-btn bg-slate-100 text-slate-700 py-3 rounded-xl font-semibold" data-freq="once">One-time</button>
+        </div>
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-2">Payment Method</label>
+        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4">
+          <option>💳 Credit Card</option>
+          <option>🏦 Bank Transfer</option>
+          <option>📱 PayPal</option>
+          <option>🪙 Cryptocurrency</option>
+        </select>
+      </div>
+      <button id="donateBtn" class="btn-primary w-full text-white py-4 rounded-xl font-bold text-lg">Complete Donation</button>
+      <div id="donateSuccess" class="hidden mt-4 p-4 bg-green-50 text-green-700 rounded-xl text-center font-semibold">✅ Thank you! Your donation has been received.</div>
+    </div>
+  </div>
+</section>
+
+<div class="text-center py-10 text-slate-400 text-xs">
+  &copy; 2026 HopeNet. All rights reserved.
+</div>
+</main>
+
+<script>
+// Navigation logic
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const page = link.getAttribute('data-page');
+    if(page) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      const activeSec = document.getElementById(page);
+      if(activeSec) activeSec.classList.add('active');
+      
+      document.querySelectorAll('.nav-link').forEach(nl => nl.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+});
+
+// Dropdown toggle
+const moreBtn = document.getElementById('moreBtn');
+const moreDropdown = document.getElementById('moreDropdown');
+if(moreBtn && moreDropdown) {
+  moreBtn.addEventListener('click', () => {
+    moreDropdown.classList.toggle('hidden');
+  });
+}
+
+// Emergency quick donate simulation
+function quickDonate(amount) {
+  const msg = document.getElementById('quickDonateMsg');
+  if(msg) {
+    msg.innerHTML = `⚙️ Thank you! Your $${amount} emergency contribution has been received.`;
+    msg.classList.remove('hidden');
+    setTimeout(() => msg.classList.add('hidden'), 4000);
+  }
+}
+
+// Live dashboard Simulation
+let donorCount = 12847, fundAmount = 2847293, livesCount = 51204, projectsCount = 124;
+function updateDashboard() {
+  if (Math.random() > 0.7) donorCount += Math.floor(Math.random() * 3);
+  if (Math.random() > 0.6) fundAmount += Math.floor(Math.random() * 500) + 100;
+  if (Math.random() > 0.8) livesCount += Math.floor(Math.random() * 5);
+  
+  const dDonors = document.getElementById('dashDonors');
+  const dFunds = document.getElementById('dashFunds');
+  const dLives = document.getElementById('dashLives');
+  const dProjects = document.getElementById('dashProjects');
+  
+  if(dDonors) dDonors.innerText = donorCount.toLocaleString();
+  if(dFunds) dFunds.innerText = '$' + fundAmount.toLocaleString();
+  if(dLives) dLives.innerText = livesCount.toLocaleString();
+  if(dProjects) dProjects.innerText = projectsCount.toLocaleString();
+}
+setInterval(updateDashboard, 3000);
+</script>
+</body>
+</html>
